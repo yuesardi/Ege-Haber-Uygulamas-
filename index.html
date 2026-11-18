@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ege Kampüs Muhabiri | Haber Simülasyonu</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #22c55e;
+      --accent-dark: #16a34a;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; }
+    .app { width: 100%; max-width: 520px; background: var(--card); border-radius: 18px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.45); border: 1px solid #334155; }
+    header { background: linear-gradient(135deg, #065f46, #0f172a); padding: 18px 20px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+    .brand h1 { font-size: 1.15rem; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .brand span { font-size: 0.78rem; color: #a7f3d0; display: block; margin-top: 2px; }
+    .stats { display: flex; gap: 10px; }
+    .stat-box { background: rgba(15,23,42,0.75); padding: 6px 10px; border-radius: 10px; text-align: center; border: 1px solid #334155; }
+    .stat-box small { display: block; font-size: 0.65rem; color: var(--muted); }
+    .stat-box strong { font-size: 0.9rem; color: var(--accent); }
+    .content { padding: 20px; }
+    .badge { display: inline-block; background: rgba(34,197,94,0.15); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-bottom: 10px; }
+    h2 { font-size: 1.25rem; margin-bottom: 8px; }
+    p.desc { color: var(--muted); font-size: 0.92rem; line-height: 1.5; margin-bottom: 18px; }
+    .locations { display: grid; gap: 12px; }
+    .loc-card { background: #0f172a; border: 1px solid #334155; border-radius: 14px; padding: 14px 16px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+    .loc-card:hover:not(.done) { border-color: var(--accent); transform: translateY(-2px); }
+    .loc-card.done { opacity: 0.55; cursor: default; border-color: #475569; }
+    .loc-info h3 { font-size: 1rem; margin-bottom: 4px; }
+    .loc-info small { color: var(--muted); font-size: 0.8rem; }
+    .loc-status { font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 8px; background: #1e293b; color: var(--accent); }
+    .loc-card.done .loc-status { color: #cbd5e1; }
+    .evidence-box { background: #0f172a; border-left: 4px solid var(--warning); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; line-height: 1.5; }
+    .choices { display: grid; gap: 10px; margin-top: 12px; }
+    .btn { width: 100%; padding: 13px 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: var(--text); font-size: 0.92rem; text-align: left; cursor: pointer; transition: 0.2s; line-height: 1.4; }
+    .btn:hover { border-color: var(--accent); background: #162238; }
+    .btn-primary { background: var(--accent); color: #052e16; font-weight: 700; text-align: center; border: none; margin-top: 14px; }
+    .btn-primary:hover { background: var(--accent-dark); color: #fff; }
+    .feed { margin-top: 20px; border-top: 1px solid #334155; padding-top: 16px; }
+    .feed h3 { font-size: 0.95rem; color: var(--muted); margin-bottom: 10px; }
+    .news-item { background: #0f172a; padding: 12px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 8px; }
+    .news-item .tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .news-item.true .tag { color: var(--accent); }
+    .news-item.fake .tag { color: var(--danger); }
+    .news-item h4 { font-size: 0.92rem; margin: 4px 0; }
+    .news-item p { font-size: 0.8rem; color: var(--muted); }
+    footer { text-align: center; padding: 12px; font-size: 0.75rem; color: var(--muted); border-top: 1px solid #334155; background: #0f172a; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <h1>📰 Ege Kampüs Muhabiri</h1>
+        <span>İnteraktif Haber Doğrulama Simülasyonu</span>
+      </div>
+      <div class="stats">
+        <div class="stat-box"><small>GÜVEN</small><strong id="trust">100%</strong></div>
+        <div class="stat-box"><small>PUAN</small><strong id="score">0</strong></div>
+      </div>
+    </header>
+
+    <div class="content" id="screen"></div>
+
+    <footer>
+      Geliştirici: Yusuf Kızılağaç (19250000730) • Ege MYO Bilgisayar Programcılığı
+    </footer>
+  </div>
+
+  <script>
+    const missions = [
+      {
+        id: 0,
+        loc: "📍 Kampüs Ana Yemekhane",
+        sub: "Öğle arası yoğunluğu ve zam söylentisi",
+        title: "Yemekhane Ücretlerine %100 Zam İddiası",
+        clue: "WhatsApp öğrenci gruplarında yemekhane ücretlerinin yarından itibaren iki katına çıkacağına dair ekran görüntüsü dolaşıyor. SKS Daire Başkanlığı panosunda ise henüz güncel bir duyuru yok.",
+        options: [
+          {
+            text: "📢 Sıcak Gelişme: Yemekhaneye %100 zam geldi! (Kaynağı sormadan hemen yayınla)",
+            correct: false,
+            headline: "FLAŞ: Yemekhaneye %100 Zam!",
+            result: "Resmi teyit almadan yayınladığın haber asılsız çıktı. Okuyucu güvenin düştü!",
+            trustDelta: -25,
+            scoreDelta: 0
+          },
+          {
+            text: "🔍 SKS yetkilisiyle görüşüp resmi tarife listesini doğruladıktan sonra haberleştir.",
+            correct: true,
+            headline: "DOĞRULANDI: Yemekhane Ücretlerinde Değişiklik Yok",
+            result: "Tebrikler! Resmi kaynaktan teyit alarak kampüsteki bilgi kirliliğini önledin.",
+            trustDelta: 0,
+            scoreDelta: 100
+          }
+        ]
+      },
+      {
+        id: 1,
+        loc: "📍 Bornova Küçükpark Kafe",
+        sub: "Öğrenci topluluğu etkinliği ihbarı",
+        title: "Ücretsiz Yazılım Atölyesi Duyurusu",
+        clue: "Küçükpark'taki bir kafede Bilgisayar Programcılığı öğrencilerinin hafta sonu ücretsiz C# ve Web atölyesi düzenleyeceği konuşuluyor. Etkinlik afişinde kulüp mührü ve iletişim bilgisi mevcut.",
+        options: [
+          {
+            text: "✅ Kulüp başkanıyla röportaj yap, yer-saat bilgisini netleştirip bültene ekle.",
+            correct: true,
+            headline: "KAMPÜS GÜNDEMİ: Öğrencilerden Ücretsiz Yazılım Atölyesi",
+            result: "Harika muhabirlik! Doğru yer, zaman ve kaynak bilgisiyle yüksek etkileşim aldın.",
+            trustDelta: 0,
+            scoreDelta: 100
+          },
+          {
+            text: "⚠️ Katılım ücretliymiş gibi sansasyonel başlık atarak dikkat çek.",
+            correct: false,
+            headline: "SKANDAL: Ücretsiz Denilen Atölye Paralı Çıktı!",
+            result: "Clickbait (tık tuzağı) başlık kullandığın için öğrenciler tepki gösterdi.",
+            trustDelta: -20,
+            scoreDelta: 10
+          }
+        ]
+      },
+      {
+        id: 2,
+        loc: "📍 Kampüs Halı Saha Tesisleri",
+        sub: "Bölümler arası turnuva finali",
+        title: "Final Maçı Hava Muhalefeti Nedeniyle Ertelendi mi?",
+        clue: "Akşam 21:00'de oynanacak bölümler arası halı saha finali öncesi sağanak yağış uyarısı verildi. Tesis sorumlusu sahanın drenajının açık olduğunu ve maçın oynanacağını belirtti.",
+        options: [
+          {
+            text: "⚽ Tesis sorumlusunun açıklamasını kaynak göstererek maçın saatinde oynanacağını duyur.",
+            correct: true,
+            headline: "SPOR: Final Maçı Planlandığı Gibi 21:00'de Oynanacak",
+            result: "Tam isabet! Saha sorumlusuyla görüşerek takımların yanlış bilgilendirilmesini önledin.",
+            trustDelta: 0,
+            scoreDelta: 100
+          },
+          {
+            text: "❌ Yağmur yağıyor diyerek maçın iptal edildiğini yaz.",
+            correct: false,
+            headline: "SON DAKİKA: Halı Saha Finali İptal Edildi",
+            result: "Maç oynandı ama senin haberin yüzünden seyirciler sahaya gelmedi. Güven kaybı!",
+            trustDelta: -25,
+            scoreDelta: 0
+          }
+        ]
+      }
+    ];
+
+    let state = { trust: 100, score: 0, completed: [], published: [] };
+
+    function renderHome() {
+      const allDone = state.completed.length === missions.length;
+      let html = `
+        <span class="badge">📍 BORNOVA / EGE KAMPÜS</span>
+        <h2>Muhabir Görev Haritası</h2>
+        <p class="desc">Kampüsün farklı noktalarındaki haber ihbarlarını incele, kaynakları doğrula ve güvenilir haber bülteni oluştur.</p>
+        <div class="locations">
+      `;
+
+      missions.forEach(m => {
+        const isDone = state.completed.includes(m.id);
+        html += `
+          <div class="loc-card ${isDone ? 'done' : ''}" onclick="${isDone ? '' : `openMission(${m.id})`}">
+            <div class="loc-info">
+              <h3>${m.loc}</h3>
+              <small>${m.sub}</small>
+            </div>
+            <div class="loc-status">${isDone ? 'Tamamlandı ✓' : 'Habere Git →'}</div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+
+      if (allDone) {
+        html += `
+          <div class="evidence-box" style="margin-top:16px; border-color: var(--accent);">
+            <strong>🎉 Tüm Muhabirlik Görevleri Tamamlandı!</strong><br>
+            Toplam Skorun: <strong>${state.score} Puan</strong> | Okuyucu Güvenin: <strong>%${state.trust}</strong>
+          </div>
+          <button class="btn btn-primary" onclick="resetGame()">Simülasyonu Yeniden Başlat</button>
+        `;
+      }
+
+      if (state.published.length > 0) {
+        html += `<div class="feed"><h3>📰 Yayınlanan Kampüs Bülteni (${state.published.length})</h3>`;
+        state.published.slice().reverse().forEach(item => {
+          html += `
+            <div class="news-item ${item.correct ? 'true' : 'fake'}">
+              <div class="tag">${item.correct ? '✓ DOĞRULANMIŞ HABER' : '✕ YANILTICI HABER'}</div>
+              <h4>${item.headline}</h4>
+              <p>${item.result}</p>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      document.getElementById('screen').innerHTML = html;
+      document.getElementById('trust').textContent = state.trust + '%';
+      document.getElementById('score').textContent = state.score;
+    }
+
+    function openMission(id) {
+      const m = missions.find(x => x.id === id);
+      let html = `
+        <span class="badge">${m.loc}</span>
+        <h2>${m.title}</h2>
+        <div class="evidence-box">
+          <strong>🔎 Saha Notu & İhbar:</strong><br>${m.clue}
+        </div>
+        <p class="desc">Muhabir olarak nasıl bir yayın kararı alacaksın?</p>
+        <div class="choices">
+      `;
+      m.options.forEach((opt, idx) => {
+        html += `<button class="btn" onclick="choose(${m.id}, ${idx})">${opt.text}</button>`;
+      });
+      html += `</div><button class="btn" style="margin-top:12px; text-align:center; color:var(--muted);" onclick="renderHome()">← Haritaya Dön</button>`;
+      document.getElementById('screen').innerHTML = html;
+    }
+
+    function choose(missionId, optIdx) {
+      const m = missions.find(x => x.id === missionId);
+      const opt = m.options[optIdx];
+      state.trust = Math.max(0, Math.min(100, state.trust + opt.trustDelta));
+      state.score += opt.scoreDelta;
+      state.completed.push(missionId);
+      state.published.push(opt);
+      renderHome();
+    }
+
+    function resetGame() {
+      state = { trust: 100, score: 0, completed: [], published: [] };
+      renderHome();
+    }
+
+    renderHome();
+  </script>
+</body>
+</html>
