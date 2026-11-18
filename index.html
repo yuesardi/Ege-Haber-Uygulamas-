@@ -3,245 +3,1519 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ege Kampüs Muhabiri | Haber Simülasyonu</title>
+  <title>Ege Kampüs Muhabiri | Haber Merkezi Simülasyonu</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --accent: #22c55e;
-      --accent-dark: #16a34a;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --muted: #94a3b8;
+    * {
+      box-sizing: border-box;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; }
-    .app { width: 100%; max-width: 520px; background: var(--card); border-radius: 18px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.45); border: 1px solid #334155; }
-    header { background: linear-gradient(135deg, #065f46, #0f172a); padding: 18px 20px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-    .brand h1 { font-size: 1.15rem; color: #fff; display: flex; align-items: center; gap: 8px; }
-    .brand span { font-size: 0.78rem; color: #a7f3d0; display: block; margin-top: 2px; }
-    .stats { display: flex; gap: 10px; }
-    .stat-box { background: rgba(15,23,42,0.75); padding: 6px 10px; border-radius: 10px; text-align: center; border: 1px solid #334155; }
-    .stat-box small { display: block; font-size: 0.65rem; color: var(--muted); }
-    .stat-box strong { font-size: 0.9rem; color: var(--accent); }
-    .content { padding: 20px; }
-    .badge { display: inline-block; background: rgba(34,197,94,0.15); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; margin-bottom: 10px; }
-    h2 { font-size: 1.25rem; margin-bottom: 8px; }
-    p.desc { color: var(--muted); font-size: 0.92rem; line-height: 1.5; margin-bottom: 18px; }
-    .locations { display: grid; gap: 12px; }
-    .loc-card { background: #0f172a; border: 1px solid #334155; border-radius: 14px; padding: 14px 16px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
-    .loc-card:hover:not(.done) { border-color: var(--accent); transform: translateY(-2px); }
-    .loc-card.done { opacity: 0.55; cursor: default; border-color: #475569; }
-    .loc-info h3 { font-size: 1rem; margin-bottom: 4px; }
-    .loc-info small { color: var(--muted); font-size: 0.8rem; }
-    .loc-status { font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 8px; background: #1e293b; color: var(--accent); }
-    .loc-card.done .loc-status { color: #cbd5e1; }
-    .evidence-box { background: #0f172a; border-left: 4px solid var(--warning); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; line-height: 1.5; }
-    .choices { display: grid; gap: 10px; margin-top: 12px; }
-    .btn { width: 100%; padding: 13px 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: var(--text); font-size: 0.92rem; text-align: left; cursor: pointer; transition: 0.2s; line-height: 1.4; }
-    .btn:hover { border-color: var(--accent); background: #162238; }
-    .btn-primary { background: var(--accent); color: #052e16; font-weight: 700; text-align: center; border: none; margin-top: 14px; }
-    .btn-primary:hover { background: var(--accent-dark); color: #fff; }
-    .feed { margin-top: 20px; border-top: 1px solid #334155; padding-top: 16px; }
-    .feed h3 { font-size: 0.95rem; color: var(--muted); margin-bottom: 10px; }
-    .news-item { background: #0f172a; padding: 12px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 8px; }
-    .news-item .tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-    .news-item.true .tag { color: var(--accent); }
-    .news-item.fake .tag { color: var(--danger); }
-    .news-item h4 { font-size: 0.92rem; margin: 4px 0; }
-    .news-item p { font-size: 0.8rem; color: var(--muted); }
-    footer { text-align: center; padding: 12px; font-size: 0.75rem; color: var(--muted); border-top: 1px solid #334155; background: #0f172a; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #090d16;
+      color: #f8fafc;
+      overflow-x: hidden;
+      width: 100%;
+      min-height: 100%;
+    }
+
+    /* Canlı Son Dakika Haber Bandı Animasyonu */
+    .ticker-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .ticker-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: tickerScroll 30s linear infinite;
+    }
+
+    .ticker-wrap:hover .ticker-content {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerScroll {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    /* Yumuşak Giriş Animasyonu */
+    .fade-in {
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Özel Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
   </style>
 </head>
-<body>
-  <div class="app">
-    <header>
-      <div class="brand">
-        <h1>📰 Ege Kampüs Muhabiri</h1>
-        <span>İnteraktif Haber Doğrulama Simülasyonu</span>
+<body class="min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 bg-[#090d16] text-slate-100">
+
+  <!-- Ana Haber Merkezi Konteyneri -->
+  <main class="w-full max-w-4xl bg-[#111827] rounded-2xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col my-auto">
+
+    <!-- 1. Canlı Son Dakika Haber Bandı -->
+    <div class="bg-[#0f172a] border-b border-slate-800 flex items-center text-xs">
+      <div class="bg-red-600 text-white font-black uppercase tracking-wider px-3 py-2 flex items-center gap-1.5 shrink-0 z-10 shadow-md">
+        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+        <span>SON DAKİKA</span>
       </div>
-      <div class="stats">
-        <div class="stat-box"><small>GÜVEN</small><strong id="trust">100%</strong></div>
-        <div class="stat-box"><small>PUAN</small><strong id="score">0</strong></div>
+      <div class="ticker-wrap flex-1 py-2 px-3 text-slate-200 font-medium">
+        <div id="news-ticker-text" class="ticker-content">
+          🔴 EGE BÜLTEN CANLI YAYIN: Bornova Kampüsü'nde gündem yoğun! Muhabirlerimiz sahadan anlık bildirmeye devam ediyor... • 📢 Yemekhane, Kütüphane ve ESHOT ring duyuruları mercek altında... • ⚽ Bölümler Arası Halı Saha Turnuvası finali ve Teknopark staj ilanları yayında...
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Üst Haber Merkezi Başlığı & Muhabir Durum Paneli -->
+    <header class="bg-gradient-to-r from-[#064e3b] via-[#0f172a] to-[#111827] p-4 sm:p-5 border-b border-slate-800">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <!-- Logo & Dinamik Rütbe -->
+        <div class="flex items-start sm:items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-[#22c55e]/20 border border-[#22c55e]/40 flex items-center justify-center text-2xl shrink-0 shadow-lg">
+            📰
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">
+                Ege Kampüs Muhabiri
+              </h1>
+              <span id="rank-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                🎙️ Stajyer Muhabir
+              </span>
+            </div>
+            <p class="text-xs text-emerald-300/90 mt-0.5 font-medium">
+              Ege Bülten Dijital Haber Merkezi &amp; Doğrulama Simülasyonu
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 Temel Gösterge: Güven Puanı, Enerji Barı, Toplam Skor, Okunma -->
+        <div class="grid grid-cols-4 gap-2 sm:gap-2.5">
+          <div class="bg-[#0f172a]/90 border border-slate-700/80 rounded-xl px-2.5 py-2 text-center">
+            <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">GÜVEN</span>
+            <strong id="stat-trust" class="text-xs sm:text-sm font-black text-[#22c55e]">%100</strong>
+          </div>
+
+          <div class="bg-[#0f172a]/90 border border-slate-700/80 rounded-xl px-2.5 py-2 text-center">
+            <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">ENERJİ</span>
+            <strong id="stat-energy" class="text-xs sm:text-sm font-black text-sky-400">100/100</strong>
+            <div class="w-full h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
+              <div id="energy-bar-fill" class="h-full bg-sky-400 transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <div class="bg-[#0f172a]/90 border border-slate-700/80 rounded-xl px-2.5 py-2 text-center">
+            <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">SKOR</span>
+            <strong id="stat-score" class="text-xs sm:text-sm font-black text-amber-400">0</strong>
+          </div>
+
+          <div class="bg-[#0f172a]/90 border border-slate-700/80 rounded-xl px-2.5 py-2 text-center">
+            <span class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">OKUNMA</span>
+            <strong id="stat-views" class="text-xs sm:text-sm font-black text-purple-400">0</strong>
+          </div>
+        </div>
+
       </div>
     </header>
 
-    <div class="content" id="screen"></div>
+    <!-- 3. Navigasyon Sekmeleri -->
+    <nav class="bg-[#0f172a] border-b border-slate-800 px-3 sm:px-5 pt-2 flex gap-1.5 sm:gap-2 overflow-x-auto">
+      <button
+        type="button"
+        id="tab-btn-map"
+        data-tab="map"
+        class="nav-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer border-t border-x"
+      >
+        <span>🗺️</span>
+        <span>Görev Haritası</span>
+        <span id="badge-missions-count" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-slate-800 text-slate-300">0/6</span>
+      </button>
 
-    <footer>
-      Geliştirici: Yusuf Kızılağaç (19250000730) • Ege MYO Bilgisayar Programcılığı
+      <button
+        type="button"
+        id="tab-btn-newspaper"
+        data-tab="newspaper"
+        class="nav-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer border-t border-x"
+      >
+        <span>🗞️</span>
+        <span>Canlı Gazete Bülteni</span>
+        <span id="badge-news-count" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-[#22c55e]">0</span>
+      </button>
+
+      <button
+        type="button"
+        id="tab-btn-report"
+        data-tab="report"
+        class="nav-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer border-t border-x"
+      >
+        <span>🪪</span>
+        <span>Basın Kartı &amp; Başarımlar</span>
+      </button>
+    </nav>
+
+    <!-- 4. Dinamik Bildirim / Uyarı Alanı -->
+    <div id="toast-banner" class="hidden mx-4 sm:mx-6 mt-4 p-3 rounded-xl border text-xs sm:text-sm font-medium flex items-center justify-between gap-2 fade-in">
+      <span id="toast-message"></span>
+      <button type="button" id="toast-close-btn" class="text-xs font-bold opacity-75 hover:opacity-100 px-2 py-1 cursor-pointer">✕</button>
+    </div>
+
+    <!-- 5. Ana Dinamik Ekran Alanı -->
+    <section id="main-viewport" class="p-4 sm:p-6 flex-1 min-h-[430px]">
+      <!-- JavaScript tarafından güvenli şekilde doldurulur -->
+    </section>
+
+    <!-- 6. Alt Bilgi & Hızlı Aksiyonlar -->
+    <footer class="bg-[#0a0f1c] border-t border-slate-800/90 px-4 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[11px] sm:text-xs text-slate-400">
+      <div class="text-center sm:text-left">
+        Geliştirici: <span class="text-slate-200 font-bold">Yusuf Kızılağaç (19250000730)</span> • Ege MYO Bilgisayar Programcılığı
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
+        <button
+          type="button"
+          id="btn-coffee-break"
+          class="px-3 py-1.5 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 font-bold transition cursor-pointer"
+        >
+          ☕ Kahve Molası (+40 Enerji)
+        </button>
+        <button
+          type="button"
+          id="btn-reset-sim"
+          class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-red-950/60 text-slate-300 hover:text-red-300 border border-slate-700 hover:border-red-500/40 font-bold transition cursor-pointer"
+        >
+          ↻ Sıfırla
+        </button>
+      </div>
     </footer>
-  </div>
+
+  </main>
 
   <script>
-    const missions = [
-      {
-        id: 0,
-        loc: "📍 Kampüs Ana Yemekhane",
-        sub: "Öğle arası yoğunluğu ve zam söylentisi",
-        title: "Yemekhane Ücretlerine %100 Zam İddiası",
-        clue: "WhatsApp öğrenci gruplarında yemekhane ücretlerinin yarından itibaren iki katına çıkacağına dair ekran görüntüsü dolaşıyor. SKS Daire Başkanlığı panosunda ise henüz güncel bir duyuru yok.",
-        options: [
-          {
-            text: "📢 Sıcak Gelişme: Yemekhaneye %100 zam geldi! (Kaynağı sormadan hemen yayınla)",
-            correct: false,
-            headline: "FLAŞ: Yemekhaneye %100 Zam!",
-            result: "Resmi teyit almadan yayınladığın haber asılsız çıktı. Okuyucu güvenin düştü!",
-            trustDelta: -25,
-            scoreDelta: 0
-          },
-          {
-            text: "🔍 SKS yetkilisiyle görüşüp resmi tarife listesini doğruladıktan sonra haberleştir.",
-            correct: true,
-            headline: "DOĞRULANDI: Yemekhane Ücretlerinde Değişiklik Yok",
-            result: "Tebrikler! Resmi kaynaktan teyit alarak kampüsteki bilgi kirliliğini önledin.",
-            trustDelta: 0,
-            scoreDelta: 100
+    (function () {
+      "use strict";
+
+      // =========================================================================
+      // 1. GÜVENLİ DEPOLAMA YARDIMCISI (IFRAME SANDBOX UYUMLU)
+      // =========================================================================
+      const STORAGE_KEY = "ege_kampus_muhabiri_v2";
+
+      function safeLoadState() {
+        try {
+          if (typeof window !== "undefined" && window.localStorage) {
+            const raw = window.localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && typeof parsed === "object") {
+                return parsed;
+              }
+            }
           }
-        ]
-      },
-      {
-        id: 1,
-        loc: "📍 Bornova Küçükpark Kafe",
-        sub: "Öğrenci topluluğu etkinliği ihbarı",
-        title: "Ücretsiz Yazılım Atölyesi Duyurusu",
-        clue: "Küçükpark'taki bir kafede Bilgisayar Programcılığı öğrencilerinin hafta sonu ücretsiz C# ve Web atölyesi düzenleyeceği konuşuluyor. Etkinlik afişinde kulüp mührü ve iletişim bilgisi mevcut.",
-        options: [
-          {
-            text: "✅ Kulüp başkanıyla röportaj yap, yer-saat bilgisini netleştirip bültene ekle.",
-            correct: true,
-            headline: "KAMPÜS GÜNDEMİ: Öğrencilerden Ücretsiz Yazılım Atölyesi",
-            result: "Harika muhabirlik! Doğru yer, zaman ve kaynak bilgisiyle yüksek etkileşim aldın.",
-            trustDelta: 0,
-            scoreDelta: 100
-          },
-          {
-            text: "⚠️ Katılım ücretliymiş gibi sansasyonel başlık atarak dikkat çek.",
-            correct: false,
-            headline: "SKANDAL: Ücretsiz Denilen Atölye Paralı Çıktı!",
-            result: "Clickbait (tık tuzağı) başlık kullandığın için öğrenciler tepki gösterdi.",
-            trustDelta: -20,
-            scoreDelta: 10
-          }
-        ]
-      },
-      {
-        id: 2,
-        loc: "📍 Kampüs Halı Saha Tesisleri",
-        sub: "Bölümler arası turnuva finali",
-        title: "Final Maçı Hava Muhalefeti Nedeniyle Ertelendi mi?",
-        clue: "Akşam 21:00'de oynanacak bölümler arası halı saha finali öncesi sağanak yağış uyarısı verildi. Tesis sorumlusu sahanın drenajının açık olduğunu ve maçın oynanacağını belirtti.",
-        options: [
-          {
-            text: "⚽ Tesis sorumlusunun açıklamasını kaynak göstererek maçın saatinde oynanacağını duyur.",
-            correct: true,
-            headline: "SPOR: Final Maçı Planlandığı Gibi 21:00'de Oynanacak",
-            result: "Tam isabet! Saha sorumlusuyla görüşerek takımların yanlış bilgilendirilmesini önledin.",
-            trustDelta: 0,
-            scoreDelta: 100
-          },
-          {
-            text: "❌ Yağmur yağıyor diyerek maçın iptal edildiğini yaz.",
-            correct: false,
-            headline: "SON DAKİKA: Halı Saha Finali İptal Edildi",
-            result: "Maç oynandı ama senin haberin yüzünden seyirciler sahaya gelmedi. Güven kaybı!",
-            trustDelta: -25,
-            scoreDelta: 0
-          }
-        ]
-      }
-    ];
-
-    let state = { trust: 100, score: 0, completed: [], published: [] };
-
-    function renderHome() {
-      const allDone = state.completed.length === missions.length;
-      let html = `
-        <span class="badge">📍 BORNOVA / EGE KAMPÜS</span>
-        <h2>Muhabir Görev Haritası</h2>
-        <p class="desc">Kampüsün farklı noktalarındaki haber ihbarlarını incele, kaynakları doğrula ve güvenilir haber bülteni oluştur.</p>
-        <div class="locations">
-      `;
-
-      missions.forEach(m => {
-        const isDone = state.completed.includes(m.id);
-        html += `
-          <div class="loc-card ${isDone ? 'done' : ''}" onclick="${isDone ? '' : `openMission(${m.id})`}">
-            <div class="loc-info">
-              <h3>${m.loc}</h3>
-              <small>${m.sub}</small>
-            </div>
-            <div class="loc-status">${isDone ? 'Tamamlandı ✓' : 'Habere Git →'}</div>
-          </div>
-        `;
-      });
-
-      html += `</div>`;
-
-      if (allDone) {
-        html += `
-          <div class="evidence-box" style="margin-top:16px; border-color: var(--accent);">
-            <strong>🎉 Tüm Muhabirlik Görevleri Tamamlandı!</strong><br>
-            Toplam Skorun: <strong>${state.score} Puan</strong> | Okuyucu Güvenin: <strong>%${state.trust}</strong>
-          </div>
-          <button class="btn btn-primary" onclick="resetGame()">Simülasyonu Yeniden Başlat</button>
-        `;
+        } catch (err) {
+          // Iframe sandbox ortamında localStorage engellenmiş olabilir; sessizce bellek içi moda geç
+        }
+        return null;
       }
 
-      if (state.published.length > 0) {
-        html += `<div class="feed"><h3>📰 Yayınlanan Kampüs Bülteni (${state.published.length})</h3>`;
-        state.published.slice().reverse().forEach(item => {
-          html += `
-            <div class="news-item ${item.correct ? 'true' : 'fake'}">
-              <div class="tag">${item.correct ? '✓ DOĞRULANMIŞ HABER' : '✕ YANILTICI HABER'}</div>
-              <h4>${item.headline}</h4>
-              <p>${item.result}</p>
+      function safeSaveState(data) {
+        try {
+          if (typeof window !== "undefined" && window.localStorage) {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          }
+        } catch (err) {
+          // Iframe sandbox ortamında yazma hatasını yut
+        }
+      }
+
+      function safeClearState() {
+        try {
+          if (typeof window !== "undefined" && window.localStorage) {
+            window.localStorage.removeItem(STORAGE_KEY);
+          }
+        } catch (err) {
+          // Yoksay
+        }
+      }
+
+      // =========================================================================
+      // 2. SABİT VERİLER: 6 FARKLI EGE MYO / BORNOVA KAMPÜS GÖREVİ
+      // =========================================================================
+      const CATEGORIES = ["Kampüs", "Spor", "Teknoloji", "Ulaşım"];
+
+      const MISSIONS = [
+        {
+          id: 0,
+          location: "📍 Kampüs Ana Yemekhane",
+          district: "Merkez Kampüs • Öğle Yemeği Saati",
+          defaultCategory: "Kampüs",
+          difficulty: "Kolay",
+          energyCost: 10,
+          title: "Yemekhane Zam Söylentisi ve Tarife Listesi",
+          summary: "Öğrenci WhatsApp gruplarında yemekhane ücretlerinin yarından itibaren %100 artacağına dair bir ekran görüntüsü hızla yayılıyor.",
+          evidences: [
+            {
+              id: "e0_1",
+              type: "📱 WhatsApp Grup Ekran Görüntüsü",
+              cost: 5,
+              isManipulated: true,
+              title: "İsimsiz Hesaptan Paylaşılan Zam Görseli",
+              detail: "Görsel yakından incelendiğinde yazı fontunun resmi duyurulardan farklı olduğu, tarih kısmında '31 Şubat' yazdığı ve dijital olarak montajlandığı tespit edildi."
+            },
+            {
+              id: "e0_2",
+              type: "🏛️ SKS Daire Başkanlığı Resmi Panosu",
+              cost: 5,
+              isManipulated: false,
+              title: "Mühürlü Güncel Yemekhane Tarifesi",
+              detail: "Sağlık Kültür ve Spor Daire Başkanlığı'nın resmi panosunda ücretlerin dönem sonuna kadar sabit kaldığı açıkça görülüyor."
+            },
+            {
+              id: "e0_3",
+              type: "🎙️ Yemekhane İşletme Sorumlusu Beyanı",
+              cost: 5,
+              isManipulated: false,
+              title: "Yetkili ile Kısa Röportaj",
+              detail: "İşletme Sorumlusu: 'Sosyal medyadaki zam listesi tamamen asılsızdır. Öğrencilerimiz mevcut tarife üzerinden hizmet almaya devam edecektir.'"
+            }
+          ],
+          correctHeadlineObjective: "DOĞRULANDI: Kampüs Yemekhanesi Ücretlerine Zam İddiası Asılsız Çıktı",
+          correctHeadlineSensational: "FLAŞ! Öğrencileri Ayağa Kaldıran Yemekhane Zam Görseli Montaj Çıktı!",
+          falseHeadlineOption: "SON DAKİKA: Kampüs Yemekhanesine Yarından İtibaren %100 Zam Geldi!",
+          expertNote: "Montajlı görseli yakalayıp SKS resmi panosunu ve işletme sorumlusunu doğrulayarak kampüsteki panik havasını önledin."
+        },
+        {
+          id: 1,
+          location: "📍 Bornova Küçükpark Kafe",
+          district: "Küçükpark • Öğrenci Toplulukları Noktası",
+          defaultCategory: "Teknoloji",
+          difficulty: "Orta",
+          energyCost: 10,
+          title: "Küçükpark Ücretsiz Yazılım ve Yapay Zekâ Atölyesi",
+          summary: "Bilgisayar Programcılığı öğrencilerinin hafta sonu Küçükpark'taki bir kafede ücretsiz Web & AI atölyesi düzenleyeceği konuşuluyor; ancak girişte ücret alındığına dair dedikodular var.",
+          evidences: [
+            {
+              id: "e1_1",
+              type: "📄 Etkinlik Afişi & QR Kod Kontrolü",
+              cost: 5,
+              isManipulated: false,
+              title: "Resmi Kulüp Afişi Analizi",
+              detail: "Afişteki QR kod doğrudan üniversitenin öğrenci topluluğu kayıt formuna yönlendiriyor ve etkinlik tamamen ücretsiz görünüyor."
+            },
+            {
+              id: "e1_2",
+              type: "👨‍💻 Topluluk Başkanı Röportajı",
+              cost: 5,
+              isManipulated: false,
+              title: "Organizatör Doğrulaması",
+              detail: "Topluluk Başkanı: 'Cumartesi 14:00'te 40 kişilik kontenjanla ücretsiz atölye yapıyoruz. Kafe mekan sponsoru oldu, çay-kahve ikramı da bizden.'"
+            },
+            {
+              id: "e1_3",
+              type: "💬 Forumdaki Sahte İhbar Yorumu",
+              cost: 5,
+              isManipulated: true,
+              title: "Anonim Hesap İddiası",
+              detail: "Yeni açılmış bir bot hesap 'Girişte 250 TL kapora istiyorlar' yazmış ancak hiçbir kanıt veya kayıt bağlantısı sunamamış."
+            }
+          ],
+          correctHeadlineObjective: "TEKNOLOJİ: Genç Yazılımcılardan Küçükpark'ta Ücretsiz Web ve Yapay Zekâ Atölyesi",
+          correctHeadlineSensational: "KAÇIRMAYIN! Öğrencilerden Tamamen Ücretsiz ve İkramlı Dev Kodlama Atölyesi!",
+          falseHeadlineOption: "SKANDAL: Ücretsiz Denilen Yazılım Atölyesi Girişte 250 TL Ücret İstiyor!",
+          expertNote: "Bot hesabın asılsız yorumunu eleyip topluluk başkanından doğrudan teyit alarak öğrencilere faydalı bir teknoloji haberi sundun."
+        },
+        {
+          id: 2,
+          location: "📍 Kampüs Halı Saha Tesisleri",
+          district: "Spor Kompleksi • Akşam Seansı",
+          defaultCategory: "Spor",
+          difficulty: "Orta",
+          energyCost: 10,
+          title: "Kampüs Halı Saha Turnuva Finali Ertelendi mi?",
+          summary: "Saat 21:00'de oynanacak bölümler arası final maçı öncesi yağmur uyarısı verildi. Gruplarda maçın iptal edildiğine dair eski tarihli bir duyuru dolaşıyor.",
+          evidences: [
+            {
+              id: "e2_1",
+              type: "📲 Sosyal Medyadaki İptal Görseli",
+              cost: 5,
+              isManipulated: true,
+              title: "Geçen Dönemden Kalma Eski Duyuru",
+              detail: "Paylaşılan 'Maçlar ertelendi' görselinin tarih damgası kontrol edildiğinde geçen yılki kış turnuvasına ait olduğu ortaya çıktı."
+            },
+            {
+              id: "e2_2",
+              type: "🏟️ Tesis Sorumlusu & Hakem Heyeti Notu",
+              cost: 5,
+              isManipulated: false,
+              title: "Saha Zemini Kontrol Raporu",
+              detail: "Tesis Sorumlusu: 'Drenaj sistemi sorunsuz çalışıyor, zeminde su birikintisi yok. Final maçı saat 21:00'de oynanacak.'"
+            },
+            {
+              id: "e2_3",
+              type: "🌦️ Meteoroloji Saatlik Radar Verisi",
+              cost: 5,
+              isManipulated: false,
+              title: "Bornova Akşam Hava Tahmini",
+              detail: "Yağışın 19:30 itibarıyla duracağı, 21:00'de havanın parçalı bulutlu ve maça tamamen elverişli olacağı görülüyor."
+            }
+          ],
+          correctHeadlineObjective: "SPOR: Bölümler Arası Halı Saha Finali Planlandığı Gibi 21:00'de Oynanacak",
+          correctHeadlineSensational: "BÜYÜK FİNAL İPTAL OLMADI! Eski Duyuru Yalan Çıktı, Dev Maç 21:00'de Başlıyor!",
+          falseHeadlineOption: "SON DAKİKA: Yağış Nedeniyle Kampüs Halı Saha Finali İptal Edildi!",
+          expertNote: "Geçen yıldan kalma eski iptal görselini fark edip saha sorumlusuyla görüşerek final maçının sağlıklı biçimde oynanmasını sağladın."
+        },
+        {
+          id: 3,
+          location: "📍 Merkez Kütüphane",
+          district: "Kampüs Meydanı • Okuma Salonları",
+          defaultCategory: "Kampüs",
+          difficulty: "Kolay",
+          energyCost: 10,
+          title: "Merkez Kütüphane Vize Haftasında 7/24 Açık İddiası",
+          summary: "Sınav haftası yaklaşırken Merkez Kütüphane'nin gece sabaha kadar açık kalacağı ve gece çorba ikramı yapılacağı konuşuluyor; bazı öğrenciler ise tadilat var diyor.",
+          evidences: [
+            {
+              id: "e3_1",
+              type: "📚 Kütüphane Daire Başkanlığı Genelgesi",
+              cost: 5,
+              isManipulated: false,
+              title: "Resmi Çalışma Saatleri Duyurusu",
+              detail: "Sınav haftası boyunca Zemin ve 1. Kat Okuma Salonlarının 7 gün 24 saat kesintisiz hizmet vereceği resmi yazıyla duyuruldu."
+            },
+            {
+              id: "e3_2",
+              type: "🍲 Gece İkramı Programı Çizelgesi",
+              cost: 5,
+              isManipulated: false,
+              title: "Öğrenci İşleri İkram Protokolü",
+              detail: "Her gece 23:30 - 01:30 saatleri arasında kütüphane girişinde öğrencilere ücretsiz sıcak çorba ve çay ikramı yapılacağı doğrulandı."
+            },
+            {
+              id: "e3_3",
+              type: "🚧 Sahte Tadilat Uyarısı Görseli",
+              cost: 5,
+              isManipulated: true,
+              title: "Logosu Eksik Kapanış Notu",
+              detail: "Kütüphanenin 18:00'de kapanacağını iddia eden görselde kurum mührü bulunmadığı ve eski bir duyurudan kesildiği belirlendi."
+            }
+          ],
+          correctHeadlineObjective: "KAMPÜS: Merkez Kütüphane Sınav Haftası Boyunca 7/24 Açık Kalacak",
+          correctHeadlineSensational: "SABAHLAYANLARA MÜJDE! Kütüphane 7/24 Açık, Gece Ücretsiz Çorba İkramı Var!",
+          falseHeadlineOption: "ÜZÜCÜ HABER: Merkez Kütüphane Tadilat Nedeniyle Akşam 18:00'de Kapanıyor!",
+          expertNote: "Resmi çalışma genelgesini ve ikram saatlerini doğrulayarak sınav haftasındaki öğrencilere doğru rehberlik sundun."
+        },
+        {
+          id: 4,
+          location: "📍 Kampüs Ring & ESHOT Durağı",
+          district: "Ana Giriş Kapısı • Bornova Metro Hattı",
+          defaultCategory: "Ulaşım",
+          difficulty: "Zor",
+          energyCost: 15,
+          title: "ESHOT ve Kampüs Ring Seferleri Değişikliği İddiası",
+          summary: "Bornova Metro çıkışındaki durağa yapıştırılan bir kağıtta kampüs ringlerinin artık ücretli olacağı ve ESHOT 525 hattının güzergahının değiştiği yazıyor.",
+          evidences: [
+            {
+              id: "e4_1",
+              type: "📌 Duraktaki A4 Kağıdı İncelemesi",
+              cost: 5,
+              isManipulated: true,
+              title: "Mühürsüz Korsan Duyuru Kağıdı",
+              detail: "Durağa bantlanan kağıtta ESHOT veya Üniversite logosu, resmi sayı numarası ve imza bulunmadığı; yanıltma amaçlı asıldığı tespit edildi."
+            },
+            {
+              id: "e4_2",
+              type: "🚌 Ulaşım Şube Müdürlüğü & Ring Şoförü Beyanı",
+              cost: 5,
+              isManipulated: false,
+              title: "Hat Yetkilisi Doğrulaması",
+              detail: "Ulaşım Şube: 'Kampüs içi ringlerimiz öğrenci kartıyla tamamen ücretsizdir. ESHOT sefer saatleri ve duraklarında hiçbir değişiklik yoktur.'"
+            },
+            {
+              id: "e4_3",
+              type: "🗺️ Canlı Ulaşım & GPS Hat Verisi",
+              cost: 5,
+              isManipulated: false,
+              title: "Anlık Sefer Takip Sistemi",
+              detail: "GPS verileri mevcut 6 kampüs durağının tamamında 10 dakikada bir düzenli ring seferinin devam ettiğini doğruluyor."
+            }
+          ],
+          correctHeadlineObjective: "ULAŞIM: Kampüs Ring Seferleri Ücretsiz ve ESHOT Güzergahı Değişmedi",
+          correctHeadlineSensational: "DURAKTAKİ SAHTE YAZIYA KANMAYIN! Ringler Hâlâ Ücretsiz, Seferler Normal!",
+          falseHeadlineOption: "SON DAKİKA: Kampüs Ringleri Ücretli Oldu, Metro Durağı İptal Edildi!",
+          expertNote: "Duraktaki mühürsüz korsan afişi deşifre edip Ulaşım Şube Müdürlüğü ile teyit alarak ulaşım karmaşasını önledin."
+        },
+        {
+          id: 5,
+          location: "📍 Ege Teknopark İnovasyon Merkezi",
+          district: "Teknopark Binası • Ar-Ge Ofisleri",
+          defaultCategory: "Teknoloji",
+          difficulty: "Zor",
+          energyCost: 15,
+          title: "Teknopark Yazılım Firmalarından Uzun Dönem Staj İlanı",
+          summary: "Ege Teknopark bünyesindeki 5 yazılım şirketinin Bilgisayar Programcılığı öğrencilerine yönelik ücretli ve sigortalı uzun dönem staj programı açtığı bildirildi.",
+          evidences: [
+            {
+              id: "e5_1",
+              type: "🏢 Teknopark Kariyer Ofisi Resmi Duyurusu",
+              cost: 5,
+              isManipulated: false,
+              title: "Kurumsal Staj Başvuru Kılavuzu",
+              detail: "Teknopark Yönetim A.Ş. web portalında 5 Ar-Ge firmasının Front-End, Mobil ve Veri Tabanı alanlarında 25 stajyer alacağı resmi olarak yayımlanmış."
+            },
+            {
+              id: "e5_2",
+              type: "🎓 Ege MYO Staj Koordinatörlüğü Onayı",
+              cost: 5,
+              isManipulated: false,
+              title: "Bölüm Staj Komisyonu Görüşü",
+              detail: "Staj Koordinatörü: 'Program zorunlu yaz stajı ve dönem içi iş yeri eğitimi kapsamında geçerlidir; SGK primleri üniversitemizce karşılanacaktır.'"
+            },
+            {
+              id: "e5_3",
+              type: "🔗 Şüpheli Kısaltılmış Başvuru Linki",
+              cost: 5,
+              isManipulated: true,
+              title: "Kimlik Bilgisi İsteyen Sahte Form",
+              detail: "Sosyal medyada dolaşan 'bit.ly' uzantılı bir formun şifre ve kart bilgisi istediği; gerçek başvuruların yalnızca 'kariyer.egeteknopark' üzerinden yapıldığı saptandı."
+            }
+          ],
+          correctHeadlineObjective: "KARİYER & TEKNOLOJİ: Ege Teknopark Firmalarından Öğrencilere 25 Kişilik Staj Programı",
+          correctHeadlineSensational: "ÖĞRENCİLERE BÜYÜK FIRSAT! Teknopark'ta 25 Kişilik Staj Açıldı, Sahte Linklere Dikkat!",
+          falseHeadlineOption: "UYARI: Teknopark Staj İlanlarının Tamamı Sahte Çıktı, Başvurular İptal!",
+          expertNote: "Hem gerçek staj fırsatını doğruladın hem de araya sızdırılan sahte oltalama (phishing) linkine karşı öğrencileri uyardın!"
+        }
+      ];
+
+      // 6 Adet Başarım Rozeti
+      const ACHIEVEMENTS = [
+        {
+          id: "first_headline",
+          icon: "✍️",
+          title: "İlk Manşet",
+          desc: "İlk haberini doğrulayıp bültende yayınladın.",
+          check: function (s) { return s.published.length >= 1; }
+        },
+        {
+          id: "fake_hunter",
+          icon: "🕵️",
+          title: "Sahte Belge Avcısı",
+          desc: "En az 3 manipüle edilmiş sahte kanıtı inceledin.",
+          check: function (s) { return s.manipulatedFound >= 3; }
+        },
+        {
+          id: "trusted_pen",
+          icon: "🛡️",
+          title: "Güvenilir Kalem",
+          desc: "3+ haber yayınlayıp güven puanını %95+ tuttun.",
+          check: function (s) { return s.published.length >= 3 && s.trust >= 95; }
+        },
+        {
+          id: "category_master",
+          icon: "🗂️",
+          title: "Çok Yönlü Editör",
+          desc: "Kampüs, Spor, Teknoloji ve Ulaşım kategorilerinin tamamından haber girdin.",
+          check: function (s) {
+            const cats = new Set(s.published.map(function (p) { return p.category; }));
+            return CATEGORIES.every(function (c) { return cats.has(c); });
+          }
+        },
+        {
+          id: "viral_reach",
+          icon: "🔥",
+          title: "Kampüs Gündemi",
+          desc: "Toplam 6.000 okunma barajını geride bıraktın.",
+          check: function (s) { return s.totalViews >= 6000; }
+        },
+        {
+          id: "editor_in_chief",
+          icon: "👑",
+          title: "Usta Başyazar",
+          desc: "6 kampüs görevinin tamamını başarıyla tamamladın.",
+          check: function (s) { return s.completedIds.length === MISSIONS.length; }
+        }
+      ];
+
+      // =========================================================================
+      // 3. BAŞLANGIÇ DURUMU VE STATE YÖNETİMİ
+      // =========================================================================
+      function createDefaultState() {
+        return {
+          activeTab: "map",                 // 'map' | 'newspaper' | 'report'
+          activeMissionId: null,            // Aktif görev ID
+          inspectedEvidenceIds: [],         // İncelenen kanıt ID'leri
+          selectedCategory: "Kampüs",       // Editör masası kategori seçimi
+          selectedHeadlineType: "objective",// 'objective' | 'sensational' | 'false'
+          lastPublishFeedback: null,        // Adım 3: Yayın sonrası anlık geri bildirim kartı
+          trust: 100,
+          energy: 100,
+          score: 0,
+          totalViews: 0,
+          manipulatedFound: 0,
+          completedIds: [],
+          published: []
+        };
+      }
+
+      let state = Object.assign(createDefaultState(), safeLoadState() || {});
+
+      // Güvenlik: Dizi ve sayı alanlarının bozulmadığından emin ol
+      if (!Array.isArray(state.inspectedEvidenceIds)) state.inspectedEvidenceIds = [];
+      if (!Array.isArray(state.completedIds)) state.completedIds = [];
+      if (!Array.isArray(state.published)) state.published = [];
+      if (typeof state.trust !== "number" || isNaN(state.trust)) state.trust = 100;
+      if (typeof state.energy !== "number" || isNaN(state.energy)) state.energy = 100;
+      if (typeof state.score !== "number" || isNaN(state.score)) state.score = 0;
+      if (typeof state.totalViews !== "number" || isNaN(state.totalViews)) state.totalViews = 0;
+      if (typeof state.manipulatedFound !== "number" || isNaN(state.manipulatedFound)) state.manipulatedFound = 0;
+
+      // =========================================================================
+      // 4. RÜTBE HESAPLAMA VE YARDIMCI FONKSİYONLAR
+      // =========================================================================
+      function getRankDetails(score) {
+        if (score >= 750) {
+          return {
+            title: "👑 Başyazar",
+            nextTitle: "Maksimum Rütbe",
+            minScore: 750,
+            maxScore: 900,
+            progress: 100,
+            badgeClass: "bg-purple-500/20 text-purple-300 border-purple-500/40"
+          };
+        }
+        if (score >= 450) {
+          const pct = Math.min(100, Math.round(((score - 450) / 300) * 100));
+          return {
+            title: "⭐ Kıdemli Editör",
+            nextTitle: "Başyazar (750 Puan)",
+            minScore: 450,
+            maxScore: 750,
+            progress: pct,
+            badgeClass: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+          };
+        }
+        if (score >= 200) {
+          const pct = Math.min(100, Math.round(((score - 200) / 250) * 100));
+          return {
+            title: "📰 Saha Muhabiri",
+            nextTitle: "Kıdemli Editör (450 Puan)",
+            minScore: 200,
+            maxScore: 450,
+            progress: pct,
+            badgeClass: "bg-sky-500/20 text-sky-300 border-sky-500/40"
+          };
+        }
+        const pct = Math.min(100, Math.round((score / 200) * 100));
+        return {
+          title: "🎙️ Stajyer Muhabir",
+          nextTitle: "Saha Muhabiri (200 Puan)",
+          minScore: 0,
+          maxScore: 200,
+          progress: pct,
+          badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/40"
+        };
+      }
+
+      function showToast(msg, type) {
+        const banner = document.getElementById("toast-banner");
+        const textEl = document.getElementById("toast-message");
+        if (!banner || !textEl) return;
+
+        banner.classList.remove(
+          "hidden",
+          "bg-emerald-950/90", "border-emerald-500/50", "text-emerald-200",
+          "bg-red-950/90", "border-red-500/50", "text-red-200",
+          "bg-amber-950/90", "border-amber-500/50", "text-amber-200"
+        );
+
+        if (type === "success") {
+          banner.classList.add("bg-emerald-950/90", "border-emerald-500/50", "text-emerald-200");
+        } else if (type === "danger") {
+          banner.classList.add("bg-red-950/90", "border-red-500/50", "text-red-200");
+        } else {
+          banner.classList.add("bg-amber-950/90", "border-amber-500/50", "text-amber-200");
+        }
+
+        textEl.textContent = msg;
+      }
+
+      function hideToast() {
+        const banner = document.getElementById("toast-banner");
+        if (banner) {
+          banner.classList.add("hidden");
+        }
+      }
+
+      function escapeHtml(str) {
+        if (typeof str !== "string") return "";
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // =========================================================================
+      // 5. ÜST ÇUBUK, SEKME VE TICKER GÜNCELLEMELERİ
+      // =========================================================================
+      function updateHeaderAndTabs() {
+        const trustEl = document.getElementById("stat-trust");
+        const energyEl = document.getElementById("stat-energy");
+        const energyFillEl = document.getElementById("energy-bar-fill");
+        const scoreEl = document.getElementById("stat-score");
+        const viewsEl = document.getElementById("stat-views");
+        const rankEl = document.getElementById("rank-badge");
+        const missionsBadge = document.getElementById("badge-missions-count");
+        const newsBadge = document.getElementById("badge-news-count");
+        const tickerEl = document.getElementById("news-ticker-text");
+
+        if (trustEl) {
+          trustEl.textContent = "%" + state.trust;
+          trustEl.className = state.trust >= 80
+            ? "text-xs sm:text-sm font-black text-[#22c55e]"
+            : state.trust >= 50
+              ? "text-xs sm:text-sm font-black text-amber-400"
+              : "text-xs sm:text-sm font-black text-red-400";
+        }
+
+        if (energyEl) {
+          energyEl.textContent = state.energy + "/100";
+          energyEl.className = state.energy >= 40
+            ? "text-xs sm:text-sm font-black text-sky-400"
+            : "text-xs sm:text-sm font-black text-red-400";
+        }
+
+        if (energyFillEl) {
+          energyFillEl.style.width = Math.max(0, Math.min(100, state.energy)) + "%";
+          energyFillEl.className = state.energy >= 40
+            ? "h-full bg-sky-400 transition-all duration-300"
+            : "h-full bg-red-500 transition-all duration-300";
+        }
+
+        if (scoreEl) {
+          scoreEl.textContent = state.score.toLocaleString("tr-TR");
+        }
+
+        if (viewsEl) {
+          viewsEl.textContent = state.totalViews.toLocaleString("tr-TR");
+        }
+
+        const rank = getRankDetails(state.score);
+        if (rankEl) {
+          rankEl.textContent = rank.title;
+          rankEl.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold border " + rank.badgeClass;
+        }
+
+        if (missionsBadge) {
+          missionsBadge.textContent = state.completedIds.length + "/" + MISSIONS.length;
+        }
+
+        if (newsBadge) {
+          newsBadge.textContent = String(state.published.length);
+        }
+
+        if (tickerEl) {
+          if (state.published.length > 0) {
+            const itemsText = state.published.slice().reverse().map(function (p) {
+              const prefix = p.isAccurate ? "🟢 [DOĞRULANMIŞ]" : "🔴 [TEKZİP]";
+              return prefix + " [" + p.category + "] " + p.headline + " (" + p.views.toLocaleString("tr-TR") + " okunma)";
+            }).join("   •   ");
+            tickerEl.textContent = itemsText + "   •   📢 EGE BÜLTEN HABER MERKEZİ CANLI AKIŞI DEVAM EDİYOR...";
+          } else {
+            tickerEl.textContent = "🔴 EGE BÜLTEN CANLI YAYIN: Bornova Kampüsü'nde gündem yoğun! Muhabirlerimiz sahadan anlık bildirmeye devam ediyor... • 📢 Yemekhane, Kütüphane ve ESHOT ring duyuruları mercek altında... • ⚽ Bölümler Arası Halı Saha Turnuvası finali ve Teknopark staj ilanları yayında...";
+          }
+        }
+
+        const tabBtns = document.querySelectorAll(".nav-tab-btn");
+        tabBtns.forEach(function (btn) {
+          const tab = btn.getAttribute("data-tab");
+          if (state.activeTab === tab && state.activeMissionId === null) {
+            btn.className = "nav-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer border-t border-x bg-[#111827] text-white border-slate-700";
+          } else {
+            btn.className = "nav-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer border-t border-x bg-transparent text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-800/40";
+          }
+        });
+      }
+
+      // =========================================================================
+      // 6. EKRAN RENDER FONKSİYONLARI
+      // =========================================================================
+      function render() {
+        updateHeaderAndTabs();
+        const viewport = document.getElementById("main-viewport");
+        if (!viewport) return;
+
+        if (state.activeMissionId !== null) {
+          viewport.innerHTML = renderMissionWorkspace(state.activeMissionId);
+          return;
+        }
+
+        if (state.activeTab === "newspaper") {
+          viewport.innerHTML = renderNewspaperPortal();
+        } else if (state.activeTab === "report") {
+          viewport.innerHTML = renderPressCardAndAchievements();
+        } else {
+          viewport.innerHTML = renderMissionMap();
+        }
+      }
+
+      // --- GÖRÜNÜM 1: GÖREV HARİTASI ---
+      function renderMissionMap() {
+        const allDone = state.completedIds.length === MISSIONS.length;
+
+        const feedbackHtml = state.lastPublishFeedback ? (function () {
+          const fb = state.lastPublishFeedback;
+          const isOk = fb.isAccurate;
+          return `
+            <div class="mb-5 p-4 sm:p-5 rounded-2xl border fade-in ${isOk ? "bg-emerald-950/40 border-[#22c55e]/50" : "bg-red-950/40 border-red-500/50"}">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${isOk ? "bg-emerald-500/20 text-emerald-300" : "bg-red-500/20 text-red-300"}">
+                    ${isOk ? "✓ 3. ADIM: EDİTÖR YAYIN ANALİZİ (BAŞARILI)" : "⚠️ 3. ADIM: EDİTÖR YAYIN ANALİZİ (TEKZİP UYARISI)"}
+                  </span>
+                  <h3 class="text-sm sm:text-base font-black text-white mt-1.5">"${escapeHtml(fb.headline)}"</h3>
+                </div>
+                <button type="button" data-action="dismiss-feedback" class="text-xs font-bold text-slate-400 hover:text-white px-2 py-1 cursor-pointer">✕</button>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">${escapeHtml(fb.expertNote)}</p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-slate-800/80 text-xs">
+                <div class="flex flex-wrap gap-3 font-bold">
+                  <span class="${fb.scoreGain > 0 ? "text-[#22c55e]" : "text-red-400"}">Skor: +${fb.scoreGain}</span>
+                  <span class="${fb.trustDelta >= 0 ? "text-emerald-300" : "text-red-400"}">Güven: ${fb.trustDelta >= 0 ? "+" + fb.trustDelta : fb.trustDelta}%</span>
+                  <span class="text-purple-300">Okunma: +${fb.views.toLocaleString("tr-TR")}</span>
+                </div>
+                ${fb.unlockedBadges.length > 0
+                  ? `<span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-extrabold text-[11px]">🏆 Yeni Rozet: ${escapeHtml(fb.unlockedBadges.join(", "))}</span>`
+                  : `<button type="button" data-action="go-newspaper" class="text-emerald-300 hover:underline font-bold cursor-pointer">Gazetede İncele →</button>`
+                }
+              </div>
             </div>
           `;
-        });
-        html += `</div>`;
+        })() : "";
+
+        const completionHtml = allDone ? `
+          <div class="mb-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-950/90 to-slate-900 border border-[#22c55e]/60 fade-in">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base sm:text-lg font-black text-[#22c55e]">🎉 Tebrikler! Kampüsteki Tüm Haber Görevleri Tamamlandı</h3>
+                <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                  Güncel Rütben: <strong>${getRankDetails(state.score).title}</strong> • Toplam Skor: <strong>${state.score}</strong>
+                </p>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button type="button" data-action="go-newspaper" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">
+                  Canlı Gazete 🗞️
+                </button>
+                <button type="button" data-action="go-report" class="px-3.5 py-2 rounded-xl bg-[#22c55e] hover:bg-emerald-400 text-slate-950 text-xs font-extrabold cursor-pointer">
+                  Basın Kartı 🪪
+                </button>
+              </div>
+            </div>
+          </div>
+        ` : "";
+
+        const cardsHtml = MISSIONS.map(function (m) {
+          const isDone = state.completedIds.includes(m.id);
+          return `
+            <div class="p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3
+              ${isDone
+                ? "bg-[#0f172a]/50 border-slate-800/80 opacity-70"
+                : "bg-[#0f172a] border-slate-700/80 hover:border-[#22c55e] shadow-lg"}">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-800 text-emerald-400 border border-slate-700">
+                    ${escapeHtml(m.defaultCategory)}
+                  </span>
+                  <span class="text-[11px] font-semibold text-slate-400">
+                    Zorluk: <strong class="text-slate-200">${escapeHtml(m.difficulty)}</strong> • -${m.energyCost} Enerji
+                  </span>
+                </div>
+                <h3 class="text-sm sm:text-base font-extrabold text-white">${escapeHtml(m.location)}</h3>
+                <p class="text-[11px] text-slate-400 mb-2">${escapeHtml(m.district)}</p>
+                <p class="text-xs text-slate-300 leading-relaxed">${escapeHtml(m.title)}</p>
+              </div>
+
+              <div class="pt-2.5 border-t border-slate-800/80 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">${m.evidences.length} Kanıt Kaynağı</span>
+                ${isDone
+                  ? `<span class="text-xs font-bold text-emerald-400">✓ Bültende Yayınlandı</span>`
+                  : `<button
+                      type="button"
+                      data-action="enter-mission"
+                      data-mission-id="${m.id}"
+                      class="px-3.5 py-1.5 rounded-xl bg-[#22c55e] hover:bg-emerald-400 text-slate-950 font-extrabold text-xs transition cursor-pointer shadow-md"
+                    >
+                      Sahaya Git →
+                    </button>`
+                }
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        return `
+          <div class="fade-in">
+            ${feedbackHtml}
+            ${completionHtml}
+            <div class="mb-4">
+              <h2 class="text-base sm:text-lg font-extrabold text-white">Bornova Kampüs Haber İhbar Haritası</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Bir haber noktası seç, kanıtları inceleyip sahte belgeleri ayıkla ve editör masasında manşetini yayınla.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              ${cardsHtml}
+            </div>
+          </div>
+        `;
       }
 
-      document.getElementById('screen').innerHTML = html;
-      document.getElementById('trust').textContent = state.trust + '%';
-      document.getElementById('score').textContent = state.score;
-    }
+      // --- GÖRÜNÜM 2: 3 ADIMLI MUHABİRLİK & EDİTÖR MASASI ---
+      function renderMissionWorkspace(missionId) {
+        const mission = MISSIONS.find(function (m) { return m.id === missionId; });
+        if (!mission) {
+          state.activeMissionId = null;
+          return renderMissionMap();
+        }
 
-    function openMission(id) {
-      const m = missions.find(x => x.id === id);
-      let html = `
-        <span class="badge">${m.loc}</span>
-        <h2>${m.title}</h2>
-        <div class="evidence-box">
-          <strong>🔎 Saha Notu & İhbar:</strong><br>${m.clue}
-        </div>
-        <p class="desc">Muhabir olarak nasıl bir yayın kararı alacaksın?</p>
-        <div class="choices">
-      `;
-      m.options.forEach((opt, idx) => {
-        html += `<button class="btn" onclick="choose(${m.id}, ${idx})">${opt.text}</button>`;
-      });
-      html += `</div><button class="btn" style="margin-top:12px; text-align:center; color:var(--muted);" onclick="renderHome()">← Haritaya Dön</button>`;
-      document.getElementById('screen').innerHTML = html;
-    }
+        const inspectedCount = mission.evidences.filter(function (e) {
+          return state.inspectedEvidenceIds.includes(e.id);
+        }).length;
+        const canPublish = inspectedCount >= 2;
 
-    function choose(missionId, optIdx) {
-      const m = missions.find(x => x.id === missionId);
-      const opt = m.options[optIdx];
-      state.trust = Math.max(0, Math.min(100, state.trust + opt.trustDelta));
-      state.score += opt.scoreDelta;
-      state.completed.push(missionId);
-      state.published.push(opt);
-      renderHome();
-    }
+        // Adım 1: Kanıt Listesi
+        const evidencesHtml = mission.evidences.map(function (ev) {
+          const isInspected = state.inspectedEvidenceIds.includes(ev.id);
+          if (!isInspected) {
+            return `
+              <div class="p-3.5 rounded-xl bg-[#0f172a] border border-slate-700/90 flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-xs font-bold text-slate-200">${escapeHtml(ev.type)}</div>
+                  <div class="text-[11px] text-slate-400 mt-0.5">Henüz incelenmedi • Kaynak doğrulaması bekliyor</div>
+                </div>
+                <button
+                  type="button"
+                  data-action="inspect-evidence"
+                  data-mission-id="${mission.id}"
+                  data-evidence-id="${ev.id}"
+                  class="shrink-0 px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-xs font-bold transition cursor-pointer"
+                >
+                  🔍 İncele (-${ev.cost} Enerji)
+                </button>
+              </div>
+            `;
+          }
 
-    function resetGame() {
-      state = { trust: 100, score: 0, completed: [], published: [] };
-      renderHome();
-    }
+          return `
+            <div class="p-3.5 rounded-xl border fade-in ${ev.isManipulated ? "bg-red-950/30 border-red-500/40" : "bg-emerald-950/25 border-emerald-500/40"}">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                <span class="text-xs font-bold ${ev.isManipulated ? "text-red-400" : "text-emerald-400"}">${escapeHtml(ev.type)}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${ev.isManipulated ? "bg-red-500/20 text-red-300" : "bg-emerald-500/20 text-emerald-300"}">
+                  ${ev.isManipulated ? "⚠️ SAHTE / MANİPÜLE" : "✓ GÜVENİLİR KAYNAK"}
+                </span>
+              </div>
+              <div class="text-xs font-bold text-white mb-1">${escapeHtml(ev.title)}</div>
+              <p class="text-xs text-slate-300 leading-relaxed">${escapeHtml(ev.detail)}</p>
+            </div>
+          `;
+        }).join("");
 
-    renderHome();
+        // Adım 2: Kategori Seçimi
+        const categoriesHtml = CATEGORIES.map(function (cat) {
+          const isSelected = state.selectedCategory === cat;
+          return `
+            <button
+              type="button"
+              data-action="select-category"
+              data-category="${cat}"
+              class="px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer
+                ${isSelected
+                  ? "bg-[#22c55e] text-slate-950 border-[#22c55e]"
+                  : "bg-[#0f172a] text-slate-300 border-slate-700 hover:border-slate-500"}"
+            >
+              ${escapeHtml(cat)}
+            </button>
+          `;
+        }).join("");
+
+        // Adım 2: 3 Farklı Manşet Tonu
+        const headlineOptions = [
+          {
+            key: "objective",
+            badge: "Doğrulanmış Resmi Haber",
+            badgeClass: "bg-emerald-500/20 text-emerald-300",
+            title: mission.correctHeadlineObjective,
+            desc: "Objektif gazetecilik (+150 Skor, +%5 Güven, Dengeli Okunma)"
+          },
+          {
+            key: "sensational",
+            badge: "Sansasyonel Clickbait",
+            badgeClass: "bg-amber-500/20 text-amber-300",
+            title: mission.correctHeadlineSensational,
+            desc: "Bilgi doğru ama abartılı başlık (+120 Skor, -%3 Güven, Viral Okunma)"
+          },
+          {
+            key: "false",
+            badge: "Teyitsiz İddia / Asılsız Haber",
+            badgeClass: "bg-red-500/20 text-red-300",
+            title: mission.falseHeadlineOption,
+            desc: "Sahte duyuma dayalı yayın (0 Skor, -%25 Güven Kaybı)"
+          }
+        ];
+
+        const headlinesHtml = headlineOptions.map(function (opt) {
+          const active = state.selectedHeadlineType === opt.key;
+          return `
+            <button
+              type="button"
+              data-action="select-headline"
+              data-headline-type="${opt.key}"
+              class="w-full text-left p-3.5 rounded-xl border transition cursor-pointer
+                ${active ? "bg-slate-800/90 border-[#22c55e] ring-1 ring-[#22c55e]" : "bg-[#0f172a] border-slate-700/80 hover:border-slate-500"}"
+            >
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${opt.badgeClass}">${escapeHtml(opt.badge)}</span>
+                <span class="text-xs font-bold ${active ? "text-[#22c55e]" : "text-slate-500"}">${active ? "● Seçili" : "○ Seç"}</span>
+              </div>
+              <div class="text-xs sm:text-sm font-extrabold text-white mt-1">"${escapeHtml(opt.title)}"</div>
+              <div class="text-[11px] text-slate-400 mt-1">${escapeHtml(opt.desc)}</div>
+            </button>
+          `;
+        }).join("");
+
+        return `
+          <div class="fade-in space-y-5">
+            <!-- Üst Başlık ve Geri Dönüş -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+              <div>
+                <span class="text-xs font-bold text-[#22c55e]">${escapeHtml(mission.location)} • Önerilen: ${escapeHtml(mission.defaultCategory)}</span>
+                <h2 class="text-base sm:text-xl font-black text-white mt-0.5">${escapeHtml(mission.title)}</h2>
+              </div>
+              <button type="button" data-action="back-to-map" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 cursor-pointer">
+                ← Haritaya Dön
+              </button>
+            </div>
+
+            <!-- Gelen İhbar -->
+            <div class="p-4 rounded-xl bg-[#0f172a] border-l-4 border-amber-400">
+              <div class="text-xs font-extrabold text-amber-400 uppercase tracking-wide mb-1">📥 Sahadan Gelen İhbar</div>
+              <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">${escapeHtml(mission.summary)}</p>
+            </div>
+
+            <!-- ADIM 1: KAYNAK & KANIT DOĞRULAMA -->
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                <h3 class="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wide">
+                  1. Adım: Kaynak &amp; Kanıt Doğrulama
+                </h3>
+                <span class="text-xs font-bold ${canPublish ? "text-[#22c55e]" : "text-amber-400"}">
+                  İncelenen: ${inspectedCount}/${mission.evidences.length} (En az 2 kanıt incele)
+                </span>
+              </div>
+              <div class="space-y-2.5">
+                ${evidencesHtml}
+              </div>
+            </div>
+
+            <!-- ADIM 2: EDİTÖR MASASI & MANŞET SEÇİMİ -->
+            <div class="pt-4 border-t border-slate-800 space-y-4">
+              <div>
+                <h3 class="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wide mb-2">
+                  2. Adım: Editör Masası — Kategori &amp; Manşet Seçimi
+                </h3>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs text-slate-400 font-semibold mr-1">Haber Kategorisi:</span>
+                  ${categoriesHtml}
+                </div>
+              </div>
+
+              <div class="space-y-2.5">
+                ${headlinesHtml}
+              </div>
+            </div>
+
+            <!-- YAYINLA BUTONU -->
+            <div class="pt-2">
+              <button
+                type="button"
+                ${canPublish ? `data-action="publish-article" data-mission-id="${mission.id}"` : "disabled"}
+                class="w-full py-3.5 px-5 rounded-xl font-black text-sm transition shadow-lg
+                  ${canPublish
+                    ? "bg-[#22c55e] hover:bg-emerald-400 text-slate-950 cursor-pointer"
+                    : "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700"}"
+              >
+                ${canPublish
+                  ? "📰 Haberi Ege Bülten Manşetinden Yayınla!"
+                  : "🔒 Yayın Masasına Geçmek İçin En Az 2 Kanıtı İncele"}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // --- GÖRÜNÜM 3: CANLI GAZETE BÜLTENİ ---
+      function renderNewspaperPortal() {
+        if (state.published.length === 0) {
+          return `
+            <div class="text-center py-12 px-4 fade-in">
+              <div class="text-4xl mb-3">🗞️</div>
+              <h3 class="text-base sm:text-lg font-extrabold text-white">Henüz Yayınlanmış Bir Gazete Kupürü Yok</h3>
+              <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mt-1.5 mb-5">
+                Görev Haritası'ndan kampüs noktalarına gidip kaynakları doğrula ve ilk haberini Ege Bülten manşetine taşı.
+              </p>
+              <button type="button" data-action="back-to-map" class="px-4 py-2.5 rounded-xl bg-[#22c55e] hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-extrabold cursor-pointer">
+                Görev Haritasına Git →
+              </button>
+            </div>
+          `;
+        }
+
+        const clippingsHtml = state.published.slice().reverse().map(function (art) {
+          return `
+            <article class="p-4 sm:p-5 rounded-2xl bg-[#0f172a] border-2 ${art.isAccurate ? "border-emerald-500/35" : "border-red-500/40"} shadow-lg fade-in">
+              <!-- Gazete Kupürü Üst Şeridi -->
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-3 border-b border-slate-800">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider
+                    ${art.isAccurate ? "bg-emerald-500/20 text-emerald-300" : "bg-red-500/20 text-red-300"}">
+                    ${art.isAccurate ? "✓ DOĞRULANMIŞ HABER" : "✕ TEKZİP / YANILTICI"}
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-sky-300 border border-slate-700">
+                    #${escapeHtml(art.category)}
+                  </span>
+                </div>
+                <div class="text-[11px] text-slate-400 font-semibold">
+                  🕒 ${escapeHtml(art.time)} • 👁️ ${art.views.toLocaleString("tr-TR")} okunma
+                </div>
+              </div>
+
+              <!-- Manşet -->
+              <h3 class="text-base sm:text-lg font-black text-white leading-snug mb-2">
+                ${escapeHtml(art.headline)}
+              </h3>
+
+              <!-- Editör Notu -->
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                <strong class="text-slate-100">Muhabir &amp; Editör Raporu:</strong> ${escapeHtml(art.expertNote)}
+              </p>
+
+              <!-- Okuyucu Tepkisi & Etki -->
+              <div class="p-3 rounded-xl bg-slate-900/95 border border-slate-800 text-[11px] text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <span>${escapeHtml(art.readerComment)}</span>
+                <span class="shrink-0 font-extrabold ${art.scoreGain > 0 ? "text-[#22c55e]" : "text-red-400"}">
+                  ${art.scoreGain > 0 ? "+" + art.scoreGain + " Skor" : "0 Skor"} (${art.trustDelta >= 0 ? "+" + art.trustDelta : art.trustDelta}% Güven)
+                </span>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        return `
+          <div class="fade-in">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800">
+              <div>
+                <h2 class="text-base sm:text-lg font-black text-white">EGE BÜLTEN • Canlı Gazete Kupürleri</h2>
+                <p class="text-xs text-slate-400">Yayınladığın tüm haberler, kategori etiketleri ve doğruluk damgaları</p>
+              </div>
+              <button type="button" data-action="back-to-map" class="px-3.5 py-2 rounded-xl bg-[#22c55e] hover:bg-emerald-400 text-slate-950 text-xs font-extrabold cursor-pointer">
+                + Yeni Haber Hazırla
+              </button>
+            </div>
+            <div class="space-y-4">
+              ${clippingsHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      // --- GÖRÜNÜM 4: BASIN KARTI & BAŞARIMLAR ---
+      function renderPressCardAndAchievements() {
+        const rank = getRankDetails(state.score);
+        const accurateCount = state.published.filter(function (p) { return p.isAccurate; }).length;
+        const accuracyRate = state.published.length > 0
+          ? Math.round((accurateCount / state.published.length) * 100)
+          : 100;
+
+        const achievementsHtml = ACHIEVEMENTS.map(function (ach) {
+          const unlocked = ach.check(state);
+          return `
+            <div class="p-3.5 rounded-xl border flex items-center gap-3 transition
+              ${unlocked
+                ? "bg-emerald-950/30 border-emerald-500/40"
+                : "bg-[#0f172a]/60 border-slate-800 opacity-55"}">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0
+                ${unlocked ? "bg-[#22c55e]/20" : "bg-slate-800"}">
+                ${ach.icon}
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h4 class="text-xs sm:text-sm font-extrabold text-white">${escapeHtml(ach.title)}</h4>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded ${unlocked ? "bg-emerald-500/20 text-emerald-300" : "bg-slate-800 text-slate-400"}">
+                    ${unlocked ? "AÇIK ✓" : "KİLİTLİ"}
+                  </span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">${escapeHtml(ach.desc)}</p>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        return `
+          <div class="fade-in space-y-5">
+            <!-- Resmi Basın Kartı & Geliştirici Künyesi -->
+            <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0f172a] to-emerald-950/40 border border-slate-700/90 shadow-xl">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-14 h-14 rounded-2xl bg-[#22c55e] text-slate-950 font-black text-2xl flex items-center justify-center shadow-lg shrink-0">
+                    YK
+                  </div>
+                  <div>
+                    <div class="text-[10px] font-black tracking-widest text-[#22c55e] uppercase">RESMİ KAMPÜS BASIN KARTI</div>
+                    <h2 class="text-lg font-black text-white">Yusuf Kızılağaç</h2>
+                    <p class="text-xs text-slate-300 font-medium">Öğrenci No: 19250000730 • Ege MYO Bilgisayar Programcılığı</p>
+                  </div>
+                </div>
+                <div class="px-3.5 py-2 rounded-xl border text-xs font-extrabold self-start sm:self-center ${rank.badgeClass}">
+                  ${rank.title}
+                </div>
+              </div>
+
+              <!-- Anlık Rütbe İlerleme Çubuğu -->
+              <div class="mt-4 pt-4 border-t border-slate-800/90">
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="text-slate-300 font-bold">Rütbe İlerlemesi (${state.score} Skor)</span>
+                  <span class="text-emerald-300 font-semibold">Sonraki Hedef: ${escapeHtml(rank.nextTitle)}</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-[#22c55e] to-emerald-400 transition-all duration-500" style="width: ${rank.progress}%;"></div>
+                </div>
+              </div>
+
+              <!-- 4 Temel Performans Göstergesi -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-800/90">
+                <div class="bg-[#090d16]/70 p-3 rounded-xl text-center">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">DOĞRULUK ORANI</span>
+                  <strong class="text-base font-black text-[#22c55e]">%${accuracyRate}</strong>
+                </div>
+                <div class="bg-[#090d16]/70 p-3 rounded-xl text-center">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">YAYINLANAN HABER</span>
+                  <strong class="text-base font-black text-white">${state.published.length} / ${MISSIONS.length}</strong>
+                </div>
+                <div class="bg-[#090d16]/70 p-3 rounded-xl text-center">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">SAHTE BELGE TESPİTİ</span>
+                  <strong class="text-base font-black text-amber-400">${state.manipulatedFound}</strong>
+                </div>
+                <div class="bg-[#090d16]/70 p-3 rounded-xl text-center">
+                  <span class="block text-[10px] text-slate-400 font-bold uppercase">TOPLAM ERİŞİM</span>
+                  <strong class="text-base font-black text-purple-400">${state.totalViews.toLocaleString("tr-TR")}</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Başarım Rozeti -->
+            <div>
+              <h3 class="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wide mb-3">
+                🏆 Muhabirlik Başarım Rozetleri (6 Rozet)
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                ${achievementsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // =========================================================================
+      // 7. OYUN MANTIĞI & OLAY YÖNETİMİ (EVENT DELEGATION)
+      // =========================================================================
+      function handleEnterMission(missionId) {
+        const mission = MISSIONS.find(function (m) { return m.id === missionId; });
+        if (!mission) return;
+
+        if (state.energy < mission.energyCost) {
+          showToast("⚠️ Sahaya çıkmak için " + mission.energyCost + " Enerji gerekiyor! Sağ alttan 'Kahve Molası (+40 Enerji)' alabilirsin.", "danger");
+          return;
+        }
+
+        state.energy = Math.max(0, state.energy - mission.energyCost);
+        state.activeMissionId = mission.id;
+        state.selectedCategory = mission.defaultCategory;
+        state.selectedHeadlineType = "objective";
+        state.lastPublishFeedback = null;
+        hideToast();
+        safeSaveState(state);
+        render();
+      }
+
+      function handleInspectEvidence(missionId, evidenceId) {
+        if (state.inspectedEvidenceIds.includes(evidenceId)) return;
+
+        const mission = MISSIONS.find(function (m) { return m.id === missionId; });
+        if (!mission) return;
+
+        const ev = mission.evidences.find(function (e) { return e.id === evidenceId; });
+        if (!ev) return;
+
+        if (state.energy < ev.cost) {
+          showToast("⚠️ Kaynak incelemek için yeterli enerjin kalmadı! Sağ alttan 'Kahve Molası (+40 Enerji)' butonuna bas.", "danger");
+          return;
+        }
+
+        state.energy = Math.max(0, state.energy - ev.cost);
+        state.inspectedEvidenceIds.push(evidenceId);
+
+        if (ev.isManipulated) {
+          state.manipulatedFound += 1;
+          showToast("🚨 DİKKAT! Bu kanıtta sahtecilik / manipülasyon tespit edildi!", "danger");
+        } else {
+          showToast("✅ Güvenilir resmi kaynak doğrulandı.", "success");
+        }
+
+        safeSaveState(state);
+        render();
+      }
+
+      function handlePublishArticle(missionId) {
+        const mission = MISSIONS.find(function (m) { return m.id === missionId; });
+        if (!mission || state.completedIds.includes(missionId)) return;
+
+        // Kilidi açık rozetleri önceden kaydet
+        const previouslyUnlocked = ACHIEVEMENTS.filter(function (a) { return a.check(state); }).map(function (a) { return a.id; });
+
+        const type = state.selectedHeadlineType;
+        const category = CATEGORIES.includes(state.selectedCategory) ? state.selectedCategory : mission.defaultCategory;
+
+        let headline = "";
+        let isAccurate = true;
+        let scoreGain = 0;
+        let trustDelta = 0;
+        let views = 0;
+        let readerComment = "";
+
+        if (type === "objective") {
+          headline = mission.correctHeadlineObjective;
+          isAccurate = true;
+          scoreGain = 150;
+          trustDelta = 5;
+          views = Math.floor(1250 + Math.random() * 550);
+          readerComment = "💬 Öğrenci Yorumu: 'Kaynaklarıyla birlikte son derece net ve güvenilir bir haber, teşekkürler Ege Bülten!'";
+        } else if (type === "sensational") {
+          headline = mission.correctHeadlineSensational;
+          isAccurate = true;
+          scoreGain = 120;
+          trustDelta = -3;
+          views = Math.floor(2300 + Math.random() * 800);
+          readerComment = "💬 Öğrenci Yorumu: 'Bilgi doğru ama başlık biraz fazla heyecanlı atılmış; yine de çok işimize yaradı.'";
+        } else {
+          headline = mission.falseHeadlineOption;
+          isAccurate = false;
+          scoreGain = 0;
+          trustDelta = -25;
+          views = Math.floor(1700 + Math.random() * 600);
+          readerComment = "💬 Öğrenci Yorumu: 'Az önce resmi kaynaktan baktık, bu haber tamamen yanlış! Güven puanınız düştü.'";
+        }
+
+        // Kategori uyumu bonusu (+15 skor)
+        if (isAccurate && category === mission.defaultCategory) {
+          scoreGain += 15;
+        }
+
+        state.score += scoreGain;
+        state.trust = Math.max(0, Math.min(100, state.trust + trustDelta));
+        state.totalViews += views;
+        state.completedIds.push(mission.id);
+
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+
+        state.published.push({
+          missionId: mission.id,
+          location: mission.location,
+          category: category,
+          headline: headline,
+          type: type,
+          isAccurate: isAccurate,
+          scoreGain: scoreGain,
+          trustDelta: trustDelta,
+          views: views,
+          expertNote: mission.expertNote,
+          readerComment: readerComment,
+          time: hh + ":" + mm
+        });
+
+        // Yeni açılan rozetleri kontrol et
+        const newlyUnlocked = ACHIEVEMENTS
+          .filter(function (a) { return !previouslyUnlocked.includes(a.id) && a.check(state); })
+          .map(function (a) { return a.title; });
+
+        state.lastPublishFeedback = {
+          headline: headline,
+          isAccurate: isAccurate,
+          scoreGain: scoreGain,
+          trustDelta: trustDelta,
+          views: views,
+          expertNote: mission.expertNote,
+          unlockedBadges: newlyUnlocked
+        };
+
+        state.activeMissionId = null;
+        state.activeTab = "map";
+
+        if (isAccurate) {
+          showToast("🎉 Haber yayında! +" + scoreGain + " Skor ve " + views.toLocaleString("tr-TR") + " okunma kazandın.", "success");
+        } else {
+          showToast("⚠️ Asılsız haber yayınladın! Okuyucu güvenin %25 düştü.", "danger");
+        }
+
+        safeSaveState(state);
+        render();
+      }
+
+      function handleCoffeeBreak() {
+        if (state.energy >= 100) {
+          showToast("☕ Enerjin zaten tam dolu (100/100)!", "info");
+          return;
+        }
+        state.energy = Math.min(100, state.energy + 40);
+        showToast("☕ Kahve molası verildi! +40 Enerji yenilendi (" + state.energy + "/100).", "success");
+        safeSaveState(state);
+        render();
+      }
+
+      function handleResetSimulation() {
+        safeClearState();
+        state = createDefaultState();
+        showToast("↻ Simülasyon sıfırlandı. Yeni bir muhabirlik kariyerine hazırsın!", "info");
+        render();
+      }
+
+      // =========================================================================
+      // 8. TÜM TIKLAMA OLAYLARINI TEK MERKEZDEN GÜVENLİ YÖNETME
+      // =========================================================================
+      function bindGlobalEvents() {
+        // Sekme butonları
+        document.querySelectorAll(".nav-tab-btn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            const tab = btn.getAttribute("data-tab");
+            if (tab) {
+              state.activeTab = tab;
+              state.activeMissionId = null;
+              hideToast();
+              safeSaveState(state);
+              render();
+            }
+          });
+        });
+
+        // Bildirim kapatma
+        const toastCloseBtn = document.getElementById("toast-close-btn");
+        if (toastCloseBtn) {
+          toastCloseBtn.addEventListener("click", hideToast);
+        }
+
+        // Kahve Molası (+40 Enerji)
+        const coffeeBtn = document.getElementById("btn-coffee-break");
+        if (coffeeBtn) {
+          coffeeBtn.addEventListener("click", handleCoffeeBreak);
+        }
+
+        // Sıfırla butonu
+        const resetBtn = document.getElementById("btn-reset-sim");
+        if (resetBtn) {
+          resetBtn.addEventListener("click", handleResetSimulation);
+        }
+
+        // Dinamik içerik alanı için tek merkezli event delegation
+        const viewport = document.getElementById("main-viewport");
+        if (viewport) {
+          viewport.addEventListener("click", function (event) {
+            const target = event.target.closest("[data-action]");
+            if (!target) return;
+
+            const action = target.getAttribute("data-action");
+
+            if (action === "enter-mission") {
+              const mId = parseInt(target.getAttribute("data-mission-id"), 10);
+              if (!isNaN(mId)) handleEnterMission(mId);
+            } else if (action === "inspect-evidence") {
+              const mId = parseInt(target.getAttribute("data-mission-id"), 10);
+              const eId = target.getAttribute("data-evidence-id");
+              if (!isNaN(mId) && eId) handleInspectEvidence(mId, eId);
+            } else if (action === "select-category") {
+              const cat = target.getAttribute("data-category");
+              if (cat) {
+                state.selectedCategory = cat;
+                render();
+              }
+            } else if (action === "select-headline") {
+              const hType = target.getAttribute("data-headline-type");
+              if (hType) {
+                state.selectedHeadlineType = hType;
+                render();
+              }
+            } else if (action === "publish-article") {
+              const mId = parseInt(target.getAttribute("data-mission-id"), 10);
+              if (!isNaN(mId)) handlePublishArticle(mId);
+            } else if (action === "back-to-map") {
+              state.activeMissionId = null;
+              state.activeTab = "map";
+              hideToast();
+              safeSaveState(state);
+              render();
+            } else if (action === "go-newspaper") {
+              state.activeMissionId = null;
+              state.activeTab = "newspaper";
+              hideToast();
+              safeSaveState(state);
+              render();
+            } else if (action === "go-report") {
+              state.activeMissionId = null;
+              state.activeTab = "report";
+              hideToast();
+              safeSaveState(state);
+              render();
+            } else if (action === "dismiss-feedback") {
+              state.lastPublishFeedback = null;
+              safeSaveState(state);
+              render();
+            }
+          });
+        }
+      }
+
+      // Uygulama Başlatma
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+          bindGlobalEvents();
+          render();
+        });
+      } else {
+        bindGlobalEvents();
+        render();
+      }
+    })();
   </script>
 </body>
 </html>
